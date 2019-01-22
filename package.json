@@ -16,5 +16,9 @@
     "bable-loader": "0.0.1-security",
     "webpack": "^4.29.0",
     "webpack-cli": "^3.2.1"
+  },
+  "dependencies": {
+    "react": "^16.7.0",
+    "react-dom": "^16.7.0"
   }
 }
