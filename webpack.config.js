@@ -1,18 +1,33 @@
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 
 module.exports = {
+  entry: "./src/index.tsx",
+
+  output: {
+    filename: "bundle.js",
+    path: __dirname + "/dist"
+  },
+
+  devtool: "source-map",
+
+  resolve: {
+    extensions: [".ts", ".tsx", ".js", ".json"]
+  },
+
   module: {
     rules: [
       {
-        test: /\.m?js$/,
-        exclude: /(mode_modules|bower_components)/,
+        test: /\.tsx?$/,
         use: {
-          loader: 'babel-loader',
-          options: {
-            presets: ['@babel/preset-env']
-          }
+          loader: "awesome-typescript-loader"
         }
       },
+      {
+        enforce: "pre",
+        test: /\.js$/,
+        loader: "source-map-loader"
+      },
+
       {
         test: /\.html$/,
         use: [
@@ -23,6 +38,7 @@ module.exports = {
       }
     ]
   },
+
   plugins: [
     new HtmlWebPackPlugin({
       template: "./src/index.html",
