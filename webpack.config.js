@@ -17,7 +17,12 @@ module.exports = {
   module: {
     rules: [
       {
+<<<<<<< HEAD
         test: /\.tsx?$/,
+=======
+        test: /\.m?js$/,
+        exclude: /(node_modules|bower_components)/,
+>>>>>>> 4c3eef2afef03b8ae0892b55d37e32a6f7304c85
         use: {
           loader: "awesome-typescript-loader"
         }
