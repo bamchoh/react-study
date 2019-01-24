@@ -1,9 +1,12 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
-import { Hello } from "./components/Hello";
+import { Rect } from "./components/Rect";
 
 ReactDOM.render(
-	<Hello compiler="TypeScript" framework="React" />,
+	<div>
+		<Rect num={1} bgcolor="#00FF00" />
+		<Rect num={2} bgcolor="#FF0000" />
+	</div>,
 	document.getElementById("root")
 );
