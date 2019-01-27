@@ -20,7 +20,7 @@ export class NumberList extends React.Component<{}, TodoState> {
 
 	on_click_li = (e: React.MouseEvent<HTMLLIElement>) => {
 		var id:number;
-		id = +(e.currentTarget.key)
+		id = +(e.currentTarget.id)
 		this.state.items[id].done = true
 		this.updateState(this.state);
 	}
@@ -35,6 +35,13 @@ export class NumberList extends React.Component<{}, TodoState> {
 		this.text = e.currentTarget.value;
 	}
 
+	on_click_for_del = (e: React.MouseEvent<HTMLButtonElement>) => {
+		var id:number;
+		id = +(e.currentTarget.id)
+		this.state.items.splice(id, 1)
+		this.updateState(this.state);
+	}
+
 	drawItems = (item: Item) => {
 		if(item.done) {
 			return <s>{item.todo}</s>
@@ -45,7 +52,14 @@ export class NumberList extends React.Component<{}, TodoState> {
 	listItems = (state: TodoState) => {
 		return state.items.map((item, i) => {
 			if(item.todo!="") {
-				return <li id={String(i)} key={i} onClick={this.on_click_li}>{this.drawItems(item)}</li>
+				return(
+					<li id={String(i)} key={i} onClick={this.on_click_li}>
+						<div>
+							{this.drawItems(item)}
+							<button id={String(i)} onClick={this.on_click_for_del}>-</button>
+						</div>
+					</li>
+				)
 			}
 			return null;
 		});
