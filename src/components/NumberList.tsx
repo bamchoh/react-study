@@ -20,7 +20,7 @@ export class NumberList extends React.Component<{}, TodoState> {
 
 	on_click_li = (e: React.MouseEvent<HTMLLIElement>) => {
 		var id:number;
-		id = +(e.currentTarget.key)
+		id = +(e.currentTarget.id)
 		this.state.items[id].done = true
 		this.updateState(this.state);
 	}
