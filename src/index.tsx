@@ -1,12 +1,9 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
-import { Rect } from "./components/Rect";
+import { Todo } from "./components/Todo";
 
 ReactDOM.render(
-	<div>
-		<Rect num={1} bgcolor="#00FF00" />
-		<Rect num={2} bgcolor="#FF0000" />
-	</div>,
+	<Todo />,
 	document.getElementById("root")
 );
