@@ -67,8 +67,7 @@ const NumberList = withStyles(styles)(
 			if(this.textRef.current!.value == "") {
 				return
 			}
-			const a = addTodo(this.textRef.current!.value);
-			this.dispatch(a);
+			this.dispatch(addTodo(this.textRef.current!.value));
 			this.textRef.current!.value = "";
 		}
 
