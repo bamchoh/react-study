@@ -11,4 +11,14 @@ const addTodo = (text:string) => ({
   text
 })
 
+export const completeTodo = (id:number) => ({
+  type: 'COMPLETE_TODO',
+  id: id,
+})
+
+export const deleteTodo = (id:number) => ({
+  type: 'DELETE_TODO',
+  id: id,
+})
+
 export default addTodo

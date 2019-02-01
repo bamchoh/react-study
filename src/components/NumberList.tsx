@@ -11,7 +11,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles';
 import { Theme } from '@material-ui/core/styles/createMuiTheme';
 import { connect } from 'react-redux'
-import addTodo from '../actions'
+import addTodo, { completeTodo, deleteTodo } from '../actions'
 
 import { TodoState } from '../reducers/todos'
 import { CombineState } from '../reducers'
@@ -53,8 +53,7 @@ const NumberList = withStyles(styles)(
 		on_click_li = (e: React.MouseEvent<HTMLDivElement>) => {
 			var id:number;
 			id = +(e.currentTarget.id)
-			// this.state.items[id].done = !this.state.items[id].done
-			// this.updateState(this.state);
+      this.props.dispatch(completeTodo(id));
 		}
 
 		on_click = () => {
@@ -68,20 +67,18 @@ const NumberList = withStyles(styles)(
 		on_click_for_del = (e: React.MouseEvent<HTMLButtonElement>) => {
 			var id:number;
 			id = +(e.currentTarget.id)
-			// this.state.items.splice(id, 1)
-			// this.updateState(this.state);
+      this.props.dispatch(deleteTodo(id))
 		}
 
 		drawItems = (item: TodoState) => {
 			if(item.completed) {
-				return <s>{item.completed}</s>
+				return <s>{item.text}</s>
 			}
 			return item.text
 		}
 
 		listItems = () => {
 			return this.props.todos.map((item:TodoState) => {
-				if(item.completed==false) {
 					return(
 						<ListItem key={item.id} button id={String(item.id)} onClick={this.on_click_li}>
 						<ListItemText>
@@ -93,9 +90,7 @@ const NumberList = withStyles(styles)(
 						</IconButton>
 						</ListItemSecondaryAction>
 						</ListItem>
-					)
-				}
-				return null;
+          )
 			});
 		}
 

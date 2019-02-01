@@ -1,9 +1,9 @@
 import { TodoAction } from '../actions'
 
 export interface TodoState {
-	id:number;
-	text:string;
-	completed:boolean;
+  id:number;
+  text:string;
+  completed:boolean;
 }
 
 const todos = (state:TodoState[] = [], action:TodoAction) => {
@@ -17,6 +17,16 @@ const todos = (state:TodoState[] = [], action:TodoAction) => {
           completed: false
         }
       ]
+    case 'COMPLETE_TODO':
+      return state.map(todo => {
+        if(todo.id === action.id) {
+          return { ...todo, completed: !todo.completed }
+        } else {
+          return todo
+        }
+      })
+    case 'DELETE_TODO':
+      return state.filter(({id}) => id !== action.id)
     default:
       return state
   }
