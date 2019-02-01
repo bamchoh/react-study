@@ -10,8 +10,25 @@ import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles';
 import { Theme } from '@material-ui/core/styles/createMuiTheme';
+import { connect } from 'react-redux'
+import addTodo, { completeTodo, deleteTodo } from '../actions'
 
-import { TodoState, Item } from "./TodoStateInterface";
+import { TodoState } from '../reducers/todos'
+import { CombineState } from '../reducers'
+
+const mapStateToProps = (state:CombineState) => ({
+  todos: state.todos
+})
+
+const TodoList = ({todos} : {todos:TodoState[]}) => (
+  <ul>
+    {todos.map((todo:TodoState) =>
+      <li key={todo.id}>
+        {todo.text}
+      </li>
+    )}
+  </ul>
+)
 
 const styles = (theme: Theme) => createStyles({
 	root: {
@@ -24,74 +41,56 @@ const styles = (theme: Theme) => createStyles({
 	}
 });
 
+interface PropsWithDispatch {
+	dispatch: any
+	todos: TodoState[]
+}
+
 const NumberList = withStyles(styles)(
-	class extends React.Component<WithStyles<typeof styles>, TodoState> {
-		text: string;
+	class extends React.Component<PropsWithDispatch & WithStyles<typeof styles>, {}> {
 		textRef = React.createRef<HTMLInputElement>();
-
-		constructor(props: any) {
-			super(props);
-			this.state = {
-				items: []
-			};
-			this.text = "";
-		}
-
-		updateState = (state: TodoState) => {
-			this.setState(state)
-		}
 
 		on_click_li = (e: React.MouseEvent<HTMLDivElement>) => {
 			var id:number;
 			id = +(e.currentTarget.id)
-			this.state.items[id].done = !this.state.items[id].done
-			this.updateState(this.state);
+      this.props.dispatch(completeTodo(id));
 		}
 
 		on_click = () => {
 			if(this.textRef.current!.value == "") {
 				return
 			}
-			this.state.items.push({ todo:this.text, done:false});
+			this.props.dispatch(addTodo(this.textRef.current!.value));
 			this.textRef.current!.value = "";
-			this.updateState(this.state);
-		}
-
-		on_change = (e: React.ChangeEvent<HTMLInputElement>) => {
-			this.text = e.currentTarget.value;
 		}
 
 		on_click_for_del = (e: React.MouseEvent<HTMLButtonElement>) => {
 			var id:number;
 			id = +(e.currentTarget.id)
-			this.state.items.splice(id, 1)
-			this.updateState(this.state);
+      this.props.dispatch(deleteTodo(id))
 		}
 
-		drawItems = (item: Item) => {
-			if(item.done) {
-				return <s>{item.todo}</s>
+		drawItems = (item: TodoState) => {
+			if(item.completed) {
+				return <s>{item.text}</s>
 			}
-			return item.todo
+			return item.text
 		}
 
-		listItems = (state: TodoState) => {
-			return state.items.map((item, i) => {
-				if(item.todo!="") {
+		listItems = () => {
+			return this.props.todos.map((item:TodoState) => {
 					return(
-						<ListItem key={i} button id={String(i)} onClick={this.on_click_li}>
+						<ListItem key={item.id} button id={String(item.id)} onClick={this.on_click_li}>
 						<ListItemText>
 						{this.drawItems(item)}
 						</ListItemText>
 						<ListItemSecondaryAction>
-						<IconButton aria-label="Delete" onClick={this.on_click_for_del} id={String(i)}>
+						<IconButton aria-label="Delete" onClick={this.on_click_for_del} id={String(item.id)}>
 						<DeleteIcon />
 						</IconButton>
 						</ListItemSecondaryAction>
 						</ListItem>
-					)
-				}
-				return null;
+          )
 			});
 		}
 
@@ -99,16 +98,16 @@ const NumberList = withStyles(styles)(
 			const { classes } = this.props
 			return (
 				<div className={classes.root}>
-				<div>
-				<Button color="primary" variant="contained" onClick={this.on_click} className={classes.button}>+</Button>
-				<Input inputRef={this.textRef} type="text" onChange={this.on_change} />
-				</div>
-				<List>
-				{this.listItems(this.state)}
-				</List>
+					<div>
+						<Button color="primary" variant="contained" onClick={this.on_click} className={classes.button}>+</Button>
+						<Input inputRef={this.textRef} type="text" />
+					</div>
+					<List>
+						{this.listItems()}
+					</List>
 				</div>
 			)
 		}
 	});
 
-export default NumberList;
+export default connect(mapStateToProps)(NumberList);
