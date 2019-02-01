@@ -49,12 +49,6 @@ interface PropsWithDispatch {
 const NumberList = withStyles(styles)(
 	class extends React.Component<PropsWithDispatch & WithStyles<typeof styles>, {}> {
 		textRef = React.createRef<HTMLInputElement>();
-		dispatch:any
-
-		constructor(props: any) {
-			super(props);
-			this.dispatch = this.props.dispatch;
-		}
 
 		on_click_li = (e: React.MouseEvent<HTMLDivElement>) => {
 			var id:number;
@@ -67,7 +61,7 @@ const NumberList = withStyles(styles)(
 			if(this.textRef.current!.value == "") {
 				return
 			}
-			this.dispatch(addTodo(this.textRef.current!.value));
+			this.props.dispatch(addTodo(this.textRef.current!.value));
 			this.textRef.current!.value = "";
 		}
 
