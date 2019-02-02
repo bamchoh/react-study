@@ -1,6 +1,17 @@
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 
 module.exports = {
+  devServer: {
+    proxy: {
+      "/api": {
+        target: "http://localhost:3000"
+      }
+    },
+    historyApiFallback: {
+      index: 'index.html'
+    }
+  },
+
   entry: "./src/index.tsx",
 
   output: {
