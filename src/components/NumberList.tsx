@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Dispatch} from "redux";
 import { ButtonProps } from '@material-ui/core/Button';
 import Button from '@material-ui/core/Button';
 import Input from '@material-ui/core/Input';
@@ -41,73 +42,97 @@ const styles = (theme: Theme) => createStyles({
 	}
 });
 
+const sendToApiServer = async (dispatch: Dispatch<any>, action : any) => {
+  switch (action.type) {
+    case 'ADD_TODO':
+      const obj = action;
+      const method = 'POST';
+      const body = JSON.stringify(obj);
+      const headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'applicatoin/json'
+      };
+      const res: Response = await fetch('/api/add_todo', {method, headers, body})
+
+      if(res.ok) {
+        const json = await res.json()
+        console.log(json)
+        dispatch(json)
+      }
+      break
+    default:
+      dispatch(action)
+      break
+  }
+}
+
 interface PropsWithDispatch {
-	dispatch: any
-	todos: TodoState[]
+  dispatch: any
+  todos: TodoState[]
 }
 
 const NumberList = withStyles(styles)(
-	class extends React.Component<PropsWithDispatch & WithStyles<typeof styles>, {}> {
-		textRef = React.createRef<HTMLInputElement>();
+  class extends React.Component<PropsWithDispatch & WithStyles<typeof styles>, {}> {
+    textRef = React.createRef<HTMLInputElement>();
 
-		on_click_li = (e: React.MouseEvent<HTMLDivElement>) => {
-			var id:number;
-			id = +(e.currentTarget.id)
+    on_click_li = (e: React.MouseEvent<HTMLDivElement>) => {
+      var id:number;
+      id = +(e.currentTarget.id)
       this.props.dispatch(completeTodo(id));
-		}
+    }
 
-		on_click = () => {
-			if(this.textRef.current!.value == "") {
-				return
-			}
-			this.props.dispatch(addTodo(this.textRef.current!.value));
-			this.textRef.current!.value = "";
-		}
+    on_click = () => {
+      if(this.textRef.current!.value == "") {
+        return
+      }
+      sendToApiServer(this.props.dispatch, addTodo(this.textRef.current!.value));
+      this.textRef.current!.value = "";
+    }
 
-		on_click_for_del = (e: React.MouseEvent<HTMLButtonElement>) => {
-			var id:number;
-			id = +(e.currentTarget.id)
+    on_click_for_del = (e: React.MouseEvent<HTMLButtonElement>) => {
+      var id:number;
+      id = +(e.currentTarget.id)
       this.props.dispatch(deleteTodo(id))
-		}
+    }
 
-		drawItems = (item: TodoState) => {
-			if(item.completed) {
-				return <s>{item.text}</s>
-			}
-			return item.text
-		}
+    drawItems = (item: TodoState) => {
+      if(item.completed) {
+        return <s>{item.text}</s>
+      }
+      return item.text
+    }
 
-		listItems = () => {
-			return this.props.todos.map((item:TodoState) => {
-					return(
-						<ListItem key={item.id} button id={String(item.id)} onClick={this.on_click_li}>
-						<ListItemText>
-						{this.drawItems(item)}
-						</ListItemText>
-						<ListItemSecondaryAction>
-						<IconButton aria-label="Delete" onClick={this.on_click_for_del} id={String(item.id)}>
-						<DeleteIcon />
-						</IconButton>
-						</ListItemSecondaryAction>
-						</ListItem>
-          )
-			});
-		}
+    listItems = () => {
+      return this.props.todos.map((item:TodoState) => {
+        return(
+          <ListItem key={item.id} button id={String(item.id)} onClick={this.on_click_li}>
+          <ListItemText>
+          {this.drawItems(item)}
+          </ListItemText>
+          <ListItemSecondaryAction>
+          <IconButton aria-label="Delete" onClick={this.on_click_for_del} id={String(item.id)}>
+          <DeleteIcon />
+          </IconButton>
+          </ListItemSecondaryAction>
+          </ListItem>
+        )
+      });
+    }
 
-		render() {
-			const { classes } = this.props
-			return (
-				<div className={classes.root}>
-					<div>
-						<Button color="primary" variant="contained" onClick={this.on_click} className={classes.button}>+</Button>
-						<Input inputRef={this.textRef} type="text" />
-					</div>
-					<List>
-						{this.listItems()}
-					</List>
-				</div>
-			)
-		}
-	});
+    render() {
+      const { classes } = this.props
+      return (
+        <div className={classes.root}>
+        <div>
+        <Button color="primary" variant="contained" onClick={this.on_click} className={classes.button}>+</Button>
+        <Input inputRef={this.textRef} type="text" />
+        </div>
+        <List>
+        {this.listItems()}
+        </List>
+        </div>
+      )
+    }
+  });
 
 export default connect(mapStateToProps)(NumberList);
