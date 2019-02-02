@@ -21,4 +21,8 @@ export const deleteTodo = (id:number) => ({
   id: id,
 })
 
+export const fetchTodo = () => ({
+  type: 'FETCH_TODO',
+})
+
 export default addTodo

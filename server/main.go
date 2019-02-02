@@ -67,6 +67,26 @@ func fetchAddTodoAction(id int64) (*AddTodoAction, error) {
 	return &act, nil
 }
 
+func fetchAllTodo() ([]AddTodoAction, error) {
+	var stmt = ""
+	stmt += fmt.Sprintf("SELECT * FROM todo")
+	rows, err := db.Query(stmt)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var acts []AddTodoAction
+	for rows.Next() {
+		var act AddTodoAction
+		if err := rows.Scan(&act.ID, &act.Text, &act.Completed); err != nil {
+			return nil, err
+		}
+		acts = append(acts, act)
+	}
+	return acts, nil
+}
+
 type AddTodoAction struct {
 	Type      string `json:"type"`
 	Text      string `json:"text"`
@@ -80,8 +100,6 @@ func postAddTodoHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
-	fmt.Println(action)
 
 	var ret sql.Result
 	var err error
@@ -113,8 +131,24 @@ func postAddTodoHandler(c *gin.Context) {
 	})
 }
 
+func postFetchTodoHandler(c *gin.Context) {
+	var acts []AddTodoAction
+	var err error
+	if acts, err = fetchAllTodo(); err != nil {
+		log.Printf("[SELECT] %v", err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"type": "FETCH_TODO",
+		"data": acts,
+	})
+}
+
 func main() {
 	r := gin.Default()
 	r.POST("/api/add_todo", postAddTodoHandler)
+	r.GET("/api/fetch_todo", postFetchTodoHandler)
 	r.Run(":3000")
 }

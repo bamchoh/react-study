@@ -6,7 +6,7 @@ export interface TodoState {
   completed:boolean;
 }
 
-const todos = (state:TodoState[] = [], action:TodoAction) => {
+const todos = (state:TodoState[] = [], action:any) => {
   switch (action.type) {
     case 'ADD_TODO':
       return [
@@ -27,6 +27,14 @@ const todos = (state:TodoState[] = [], action:TodoAction) => {
       })
     case 'DELETE_TODO':
       return state.filter(({id}) => id !== action.id)
+    case 'FETCH_TODO':
+      return action.data.map((todo:any) => {
+        return ({
+          id: todo.id,
+          text: todo.text,
+          completed: todo.completed,
+        })
+      })
     default:
       return state
   }
