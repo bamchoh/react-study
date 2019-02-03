@@ -55,11 +55,39 @@ const sendToApiServer = async (dispatch: Dispatch<any>, action : any) => {
         const method = 'POST'
         const obj = action;
         const body = JSON.stringify(obj);
-        const res: Response = await fetch('/api/add_todo', {method, headers, body})
+        const ep = '/api/add_todo'
+        const res: Response = await fetch(ep, {method, headers, body})
 
         if(res.ok) {
           const json = await res.json()
-          console.log(json)
+          dispatch(json)
+        }
+        break
+      }
+    case 'COMPLETE_TODO':
+      {
+        const method = 'POST'
+        const obj = action;
+        const body = JSON.stringify(obj);
+        const ep = '/api/complete_todo'
+        const res: Response = await fetch(ep, {method, headers, body})
+
+        if(res.ok) {
+          const json = await res.json()
+          dispatch(json)
+        }
+        break
+      }
+    case 'DELETE_TODO':
+      {
+        const method = 'POST'
+        const obj = action;
+        const body = JSON.stringify(obj);
+        const ep = '/api/delete_todo'
+        const res: Response = await fetch(ep, {method, headers, body})
+
+        if(res.ok) {
+          const json = await res.json()
           dispatch(json)
         }
         break
@@ -67,7 +95,8 @@ const sendToApiServer = async (dispatch: Dispatch<any>, action : any) => {
     case 'FETCH_TODO':
       {
         const method = 'GET'
-        const res: Response = await fetch('/api/fetch_todo', {method, headers})
+        const ep = '/api/fetch_todo'
+        const res: Response = await fetch(ep, {method, headers})
 
         if(res.ok) {
           const json = await res.json()
@@ -93,7 +122,7 @@ const NumberList = withStyles(styles)(
     on_click_li = (e: React.MouseEvent<HTMLDivElement>) => {
       var id:number;
       id = +(e.currentTarget.id)
-      this.props.dispatch(completeTodo(id));
+      sendToApiServer(this.props.dispatch, completeTodo(id));
     }
 
     on_click = () => {
@@ -107,7 +136,7 @@ const NumberList = withStyles(styles)(
     on_click_for_del = (e: React.MouseEvent<HTMLButtonElement>) => {
       var id:number;
       id = +(e.currentTarget.id)
-      this.props.dispatch(deleteTodo(id))
+      sendToApiServer(this.props.dispatch, deleteTodo(id))
     }
 
     componentWillMount() {

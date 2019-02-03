@@ -4,10 +4,8 @@ export interface TodoAction {
 	text: string;
 }
 
-let nextTodoId:number = 0
 const addTodo = (text:string) => ({
   type: 'ADD_TODO',
-  id: nextTodoId++,
   text
 })
 
