@@ -28,7 +28,7 @@ const todos = (state:TodoState[] = [], action:any) => {
     case 'DELETE_TODO':
       return state.filter(({id}) => id !== action.id)
     case 'FETCH_TODO':
-      if(action.data === null) {
+      if(action.data === undefined || action.data === null) {
         return state
       }
       return action.data.map((todo:any) => {
