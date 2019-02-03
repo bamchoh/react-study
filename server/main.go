@@ -59,12 +59,65 @@ func fetchAddTodoAction(id int64) (*AddTodoAction, error) {
 	defer rows.Close()
 	var act AddTodoAction
 	for rows.Next() {
-		if err := rows.Scan(&act.ID, &act.Text, &act.Completed); err != nil {
+		var complete int64
+		if err := rows.Scan(&act.ID, &act.Text, &complete); err != nil {
 			return nil, err
+		}
+		if complete == 0 {
+			act.Completed = false
+		} else {
+			act.Completed = true
 		}
 		break
 	}
 	return &act, nil
+}
+
+func fetchAllTodo() ([]AddTodoAction, error) {
+	var stmt = ""
+	stmt += fmt.Sprintf("SELECT * FROM todo")
+	rows, err := db.Query(stmt)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var acts []AddTodoAction
+	for rows.Next() {
+		var act AddTodoAction
+		var complete int64
+		if err := rows.Scan(&act.ID, &act.Text, &complete); err != nil {
+			return nil, err
+		}
+		if complete == 0 {
+			act.Completed = false
+		} else {
+			act.Completed = true
+		}
+		acts = append(acts, act)
+	}
+	return acts, nil
+}
+
+func completeTodo(id int64) (sql.Result, error) {
+	act, err := fetchAddTodoAction(id)
+	if err != nil {
+		return nil, err
+	}
+
+	format := "UPDATE todo SET completed = %d WHERE id = %d"
+	stmt := ""
+	if act.Completed {
+		stmt = fmt.Sprintf(format, 0, id)
+	} else {
+		stmt = fmt.Sprintf(format, 1, id)
+	}
+	return db.Exec(stmt)
+}
+
+func deleteTodo(id int64) (sql.Result, error) {
+	stmt := fmt.Sprintf("DELETE FROM todo WHERE id = %d", id)
+	return db.Exec(stmt)
 }
 
 type AddTodoAction struct {
@@ -80,8 +133,6 @@ func postAddTodoHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
-	fmt.Println(action)
 
 	var ret sql.Result
 	var err error
@@ -106,15 +157,67 @@ func postAddTodoHandler(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"type":      action.Type,
-		"text":      act.Text,
-		"completed": act.Completed,
-		"id":        act.ID,
+		"type":     action.Type,
+		"text":     act.Text,
+		"complete": act.Completed,
+		"id":       act.ID,
+	})
+}
+
+func postCompleteTodoHandler(c *gin.Context) {
+	var action AddTodoAction
+	if err := c.ShouldBindJSON(&action); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	var err error
+	if _, err = completeTodo(action.ID); err != nil {
+		log.Printf("[COMPLETE] %v", err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"type": action.Type, "id": action.ID})
+}
+
+func postDeleteTodoHandler(c *gin.Context) {
+	var action AddTodoAction
+	if err := c.ShouldBindJSON(&action); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	var err error
+	if _, err = deleteTodo(action.ID); err != nil {
+		log.Printf("[DELETE] %v", err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"type": action.Type, "id": action.ID})
+}
+
+func postFetchTodoHandler(c *gin.Context) {
+	var acts []AddTodoAction
+	var err error
+	if acts, err = fetchAllTodo(); err != nil {
+		log.Printf("[SELECT] %v", err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"type": "FETCH_TODO",
+		"data": acts,
 	})
 }
 
 func main() {
 	r := gin.Default()
 	r.POST("/api/add_todo", postAddTodoHandler)
+	r.POST("/api/complete_todo", postCompleteTodoHandler)
+	r.POST("/api/delete_todo", postDeleteTodoHandler)
+	r.GET("/api/fetch_todo", postFetchTodoHandler)
 	r.Run(":3000")
 }

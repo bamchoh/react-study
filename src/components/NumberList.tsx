@@ -13,6 +13,7 @@ import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles';
 import { Theme } from '@material-ui/core/styles/createMuiTheme';
 import { connect } from 'react-redux'
 import addTodo, { completeTodo, deleteTodo } from '../actions'
+import { fetchTodo } from '../actions'
 
 import { TodoState } from '../reducers/todos'
 import { CombineState } from '../reducers'
@@ -43,23 +44,66 @@ const styles = (theme: Theme) => createStyles({
 });
 
 const sendToApiServer = async (dispatch: Dispatch<any>, action : any) => {
+  const headers = {
+    'Accept': 'application/json',
+    'Content-Type': 'applicatoin/json'
+  };
+
   switch (action.type) {
     case 'ADD_TODO':
-      const obj = action;
-      const method = 'POST';
-      const body = JSON.stringify(obj);
-      const headers = {
-        'Accept': 'application/json',
-        'Content-Type': 'applicatoin/json'
-      };
-      const res: Response = await fetch('/api/add_todo', {method, headers, body})
+      {
+        const method = 'POST'
+        const obj = action;
+        const body = JSON.stringify(obj);
+        const ep = '/api/add_todo'
+        const res: Response = await fetch(ep, {method, headers, body})
 
-      if(res.ok) {
-        const json = await res.json()
-        console.log(json)
-        dispatch(json)
+        if(res.ok) {
+          const json = await res.json()
+          dispatch(json)
+        }
+        break
       }
-      break
+    case 'COMPLETE_TODO':
+      {
+        const method = 'POST'
+        const obj = action;
+        const body = JSON.stringify(obj);
+        const ep = '/api/complete_todo'
+        const res: Response = await fetch(ep, {method, headers, body})
+
+        if(res.ok) {
+          const json = await res.json()
+          dispatch(json)
+        }
+        break
+      }
+    case 'DELETE_TODO':
+      {
+        const method = 'POST'
+        const obj = action;
+        const body = JSON.stringify(obj);
+        const ep = '/api/delete_todo'
+        const res: Response = await fetch(ep, {method, headers, body})
+
+        if(res.ok) {
+          const json = await res.json()
+          dispatch(json)
+        }
+        break
+      }
+    case 'FETCH_TODO':
+      {
+        const method = 'GET'
+        const ep = '/api/fetch_todo'
+        const res: Response = await fetch(ep, {method, headers})
+
+        if(res.ok) {
+          const json = await res.json()
+          dispatch(json)
+        }
+        break
+      }
     default:
       dispatch(action)
       break
@@ -78,7 +122,7 @@ const NumberList = withStyles(styles)(
     on_click_li = (e: React.MouseEvent<HTMLDivElement>) => {
       var id:number;
       id = +(e.currentTarget.id)
-      this.props.dispatch(completeTodo(id));
+      sendToApiServer(this.props.dispatch, completeTodo(id));
     }
 
     on_click = () => {
@@ -92,7 +136,11 @@ const NumberList = withStyles(styles)(
     on_click_for_del = (e: React.MouseEvent<HTMLButtonElement>) => {
       var id:number;
       id = +(e.currentTarget.id)
-      this.props.dispatch(deleteTodo(id))
+      sendToApiServer(this.props.dispatch, deleteTodo(id))
+    }
+
+    componentWillMount() {
+      sendToApiServer(this.props.dispatch, fetchTodo());
     }
 
     drawItems = (item: TodoState) => {
