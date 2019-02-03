@@ -16,7 +16,10 @@ import addTodo, { completeTodo, deleteTodo } from '../actions'
 import { fetchTodo } from '../actions'
 
 import { TodoState } from '../reducers/todos'
-import { CombineState } from '../reducers'
+
+export interface CombineState {
+	todos: TodoState[]
+}
 
 const mapStateToProps = (state:CombineState) => ({
   todos: state.todos
@@ -154,14 +157,14 @@ const NumberList = withStyles(styles)(
       return this.props.todos.map((item:TodoState) => {
         return(
           <ListItem key={item.id} button id={String(item.id)} onClick={this.on_click_li}>
-          <ListItemText>
-          {this.drawItems(item)}
-          </ListItemText>
-          <ListItemSecondaryAction>
-          <IconButton aria-label="Delete" onClick={this.on_click_for_del} id={String(item.id)}>
-          <DeleteIcon />
-          </IconButton>
-          </ListItemSecondaryAction>
+            <ListItemText>
+              {this.drawItems(item)}
+            </ListItemText>
+            <ListItemSecondaryAction>
+              <IconButton aria-label="Delete" onClick={this.on_click_for_del} id={String(item.id)}>
+                <DeleteIcon />
+              </IconButton>
+            </ListItemSecondaryAction>
           </ListItem>
         )
       });
@@ -171,13 +174,13 @@ const NumberList = withStyles(styles)(
       const { classes } = this.props
       return (
         <div className={classes.root}>
-        <div>
-        <Button color="primary" variant="contained" onClick={this.on_click} className={classes.button}>+</Button>
-        <Input inputRef={this.textRef} type="text" />
-        </div>
-        <List>
-        {this.listItems()}
-        </List>
+          <div>
+            <Button color="primary" variant="contained" onClick={this.on_click} className={classes.button}>+</Button>
+            <Input inputRef={this.textRef} type="text" />
+          </div>
+          <List>
+            {this.listItems()}
+          </List>
         </div>
       )
     }
