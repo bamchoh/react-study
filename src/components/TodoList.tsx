@@ -9,10 +9,10 @@ import { withStyles, WithStyles } from '@material-ui/core/styles';
 import styles from '../css/style';
 import { completeTodo, deleteTodo, fetchTodo } from '../actions'
 import { TodoState } from '../reducers/todos'
-import sendToApiServer from '../utils/sendToApiServer'
 
 interface PropsWithDispatch {
   dispatch: any
+  action: any
   todos: TodoState[]
 }
 
@@ -21,17 +21,17 @@ const TodoList = withStyles(styles)(
     on_click_li = (e: React.MouseEvent<HTMLDivElement>) => {
       var id:number;
       id = +(e.currentTarget.id)
-      sendToApiServer(this.props.dispatch, completeTodo(id));
+      this.props.action(this.props.dispatch, completeTodo(id));
     }
 
     on_click_for_del = (e: React.MouseEvent<HTMLButtonElement>) => {
       var id:number;
       id = +(e.currentTarget.id)
-      sendToApiServer(this.props.dispatch, deleteTodo(id))
+      this.props.action(this.props.dispatch, deleteTodo(id))
     }
 
     componentWillMount() {
-      sendToApiServer(this.props.dispatch, fetchTodo());
+      this.props.action(this.props.dispatch, fetchTodo());
     }
 
     drawItems = (item: TodoState) => {

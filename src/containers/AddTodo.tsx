@@ -5,11 +5,11 @@ import Button from '@material-ui/core/Button';
 import Input from '@material-ui/core/Input';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
 import styles from '../css/style';
-import sendToApiServer from '../utils/sendToApiServer'
 import addTodo from '../actions'
 
 interface PropsWithDispatch {
   dispatch: any
+  action: any
 }
 
 const AddTodo = withStyles(styles)(
@@ -20,7 +20,7 @@ const AddTodo = withStyles(styles)(
       if(this.textRef.current!.value == "") {
         return
       }
-      sendToApiServer(this.props.dispatch, addTodo(this.textRef.current!.value));
+      this.props.action(this.props.dispatch, addTodo(this.textRef.current!.value));
       this.textRef.current!.value = "";
     }
 
