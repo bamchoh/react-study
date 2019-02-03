@@ -4,7 +4,7 @@ export interface TodoAction {
 	text: string;
 }
 
-const addTodo = (text:string) => ({
+export const addTodo = (text:string) => ({
   type: 'ADD_TODO',
   text
 })
