@@ -73,7 +73,6 @@ describe('TodoList', () => {
       ]
       const wrapper = mount(<TodoList action={spy} todos={state} dispatch={{}}/>);
       const mockedEvent0 = { currentTarget: { id: "2" }};
-      // wrapper.dive().find(ListItem).at(2).simulate('click', mockedEvent0);
       expect(spy.callCount).toEqual(1)
       expect(spy.getCall(0).args[0]).toEqual({})
       expect(spy.getCall(0).args[1]).toEqual({"type": "FETCH_TODO"})
