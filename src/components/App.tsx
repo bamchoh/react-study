@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
 
-import AddTodo from "../containers/AddTodo";
+import AddTodoContainer from "../containers/AddTodoContainer";
 import VisibleTodoList from "../containers/VisibleTodoList";
 import styles from '../css/style';
 import sendToApiServer from '../utils/sendToApiServer'
@@ -12,7 +12,7 @@ const App = withStyles(styles)(
       const { classes } = this.props
       return (
         <div className={classes.root}>
-          <AddTodo action={sendToApiServer} />
+          <AddTodoContainer action={sendToApiServer} />
           <VisibleTodoList action={sendToApiServer} />
         </div>
       )
