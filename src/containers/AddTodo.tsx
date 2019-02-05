@@ -35,4 +35,4 @@ const AddTodo = withStyles(styles)(
     }
   });
 
-export default connect()(AddTodo);
+export default AddTodo;

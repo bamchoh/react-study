@@ -5,8 +5,6 @@ import { TodoState } from '../reducers/todos'
 import TodoList from './TodoList'
 import ListItem from '@material-ui/core/ListItem';
 
-import VisibleTodoList from '../containers/VisibleTodoList';
-
 describe('TodoList', () => {
   describe('should send COMPLETE_TODO action when click ListItem', () => {
     it('1 state, click first list', () => {
