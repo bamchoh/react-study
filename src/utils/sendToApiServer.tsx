@@ -1,6 +1,6 @@
 import { Dispatch} from "redux";
 
-const sendToApiServer = async (dispatch: Dispatch<any>, action : any) => {
+const sendToApiServer = async (dispatch: any, action : any) => {
   const headers = {
     'Accept': 'application/json',
     'Content-Type': 'applicatoin/json'
