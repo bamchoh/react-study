@@ -27,17 +27,20 @@ const todos = (state:TodoState[] = [], action:any) => {
       })
     case 'DELETE_TODO':
       return state.filter(({id}) => id !== action.id)
-    case 'FETCH_TODO':
-      if(action.data === undefined || action.data === null) {
+    case 'todos/update_todos':
+      if(action.payload === undefined || action.payload === null) {
         return state
       }
-      return action.data.map((todo:any) => {
-        return ({
+      var newary = []
+      for (var key of Object.keys(action.payload)) {
+        var todo = action.payload[key]
+        newary.push({
           id: todo.id,
           text: todo.text,
           completed: todo.completed,
         })
-      })
+      }
+      return newary
     default:
       return state
   }

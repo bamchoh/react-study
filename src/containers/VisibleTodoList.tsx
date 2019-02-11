@@ -9,7 +9,6 @@ export interface CombineState {
 }
 
 const mapStateToProps = (state:CombineState) => {
-  console.log(state)
   return({
     todos: state.todos
   })
