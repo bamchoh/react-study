@@ -8,8 +8,11 @@ export interface CombineState {
 	todos: TodoState[]
 }
 
-const mapStateToProps = (state:CombineState) => ({
-  todos: state.todos
-})
+const mapStateToProps = (state:CombineState) => {
+  console.log(state)
+  return({
+    todos: state.todos
+  })
+}
 
 export default connect(mapStateToProps)(TodoList);
