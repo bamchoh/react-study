@@ -83,3 +83,5 @@ typings/
 __snapshots__/
 
 *.db
+
+/public
