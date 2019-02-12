@@ -1,46 +1,31 @@
 import { TodoAction } from '../actions'
 
 export interface TodoState {
-  id:number;
+  id:string;
   text:string;
   completed:boolean;
 }
 
 const todos = (state:TodoState[] = [], action:any) => {
   switch (action.type) {
-    case 'ADD_TODO':
+    case 'todos/child_added':
+      if(action.payload === undefined || action.payload === null) {
+        return state
+      }
       return [
         ...state,
-        {
-          id: action.id,
-          text: action.text,
-          completed: false
-        }
+        action.payload
       ]
-    case 'COMPLETE_TODO':
+    case 'todos/child_deleted':
+      return state.filter(({id}) => id !== action.id)
+    case 'todos/child_changed':
       return state.map(todo => {
-        if(todo.id === action.id) {
-          return { ...todo, completed: !todo.completed }
+        if(todo.id === action.payload.id) {
+          return action.payload
         } else {
           return todo
         }
       })
-    case 'DELETE_TODO':
-      return state.filter(({id}) => id !== action.id)
-    case 'todos/update_todos':
-      if(action.payload === undefined || action.payload === null) {
-        return state
-      }
-      var newary = []
-      for (var key of Object.keys(action.payload)) {
-        var todo = action.payload[key]
-        newary.push({
-          id: todo.id,
-          text: todo.text,
-          completed: todo.completed,
-        })
-      }
-      return newary
     default:
       return state
   }

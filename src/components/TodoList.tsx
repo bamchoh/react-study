@@ -19,14 +19,12 @@ interface PropsWithDispatch {
 const TodoList = withStyles(styles)(
   class extends React.Component<PropsWithDispatch & WithStyles<typeof styles>, {}> {
     on_click_li = (e: React.MouseEvent<HTMLDivElement>) => {
-      var id:number;
-      id = +(e.currentTarget.id)
+      var id:string = e.currentTarget.id
       this.props.action(this.props.dispatch, completeTodo(id));
     }
 
     on_click_for_del = (e: React.MouseEvent<HTMLButtonElement>) => {
-      var id:number;
-      id = +(e.currentTarget.id)
+      var id:string = e.currentTarget.id
       this.props.action(this.props.dispatch, deleteTodo(id))
     }
 

@@ -2,23 +2,6 @@ import { Dispatch} from "redux";
 import * as firebase from "firebase/app";
 import 'firebase/database';
 
-const sendWithPost = async (ep:string, dispatch: any, action:any) => {
-  const headers = {
-    'Accept': 'application/json',
-    'Content-Type': 'applicatoin/json'
-  };
-
-  const method = 'POST'
-  const obj = action;
-  const body = JSON.stringify(obj);
-  const res: Response = await fetch(ep, {method, headers, body})
-
-  if(res.ok) {
-    const json = await res.json()
-    dispatch(json)
-  }
-}
-
 const addTodo = async (text:string) => {
   if(uid == "") {
     return
@@ -26,12 +9,35 @@ const addTodo = async (text:string) => {
 
   const database = firebase.database();
 
-  const ref = database.ref('todos/' + uid).push();
+  const ref = database.ref('todos/' + uid).push()
   ref.set({
     id:ref.key,
     text: text,
     completed: false
   })
+}
+
+const completeTodo = async (action:any) => {
+  if(uid == "") {
+    return
+  }
+
+  const database = firebase.database();
+
+  const ref = database.ref('todos/' + uid + '/' + action.id + '/completed')
+  ref.once('value').then((snapshot) => {
+    ref.set(!snapshot.val())
+  })
+}
+
+const deleteTodo = async (action:any) => {
+  if(uid == "") {
+    return
+  }
+
+  const database = firebase.database();
+
+  database.ref(`todos/${uid}/${action.id}`).remove()
 }
 
 const initdb = async (dispatch:any, payload:any) => {
@@ -63,16 +69,36 @@ const initdb = async (dispatch:any, payload:any) => {
     }
   })
 
-  console.log("start to watch value")
-  console.log(payload.uid)
   var todosref = database.ref('todos/' + payload.uid);
-  todosref.on('value', function(snapshot) {
+  todosref.on('child_added', function(snapshot) {
     if(snapshot!.val() === null) {
-      console.log("snapshot value is null")
     } else {
-      console.log(snapshot!.val())
       dispatch({
-        type: 'todos/update_todos',
+        type: 'todos/child_added',
+        payload: snapshot!.val()
+      })
+    }
+  }, function(error:any) {
+    console.log(error)
+  })
+
+  todosref.on('child_removed', function(snapshot) {
+    if(snapshot!.val() === null) {
+    } else {
+      dispatch({
+        type: 'todos/child_removed',
+        payload: snapshot!.val()
+      })
+    }
+  }, function(error:any) {
+    console.log(error)
+  })
+
+  todosref.on('child_changed', function(snapshot) {
+    if(snapshot!.val() === null) {
+    } else {
+      dispatch({
+        type: 'todos/child_changed',
         payload: snapshot!.val()
       })
     }
@@ -100,29 +126,12 @@ const sendToApiServer = async (dispatch: any, action : any) => {
       }
     case 'COMPLETE_TODO':
       {
-        await sendWithPost('/api/complete_todo', dispatch, action)
+        await completeTodo(action)
         break
       }
     case 'DELETE_TODO':
       {
-        await sendWithPost('/api/delete_todo', dispatch, action)
-        break
-      }
-    case 'FETCH_TODO':
-      {
-        const headers = {
-          'Accept': 'application/json',
-          'Content-Type': 'applicatoin/json'
-        };
-
-        const method = 'GET'
-        const ep = '/api/fetch_todo'
-        const res: Response = await fetch(ep, {method, headers})
-
-        if(res.ok) {
-          const json = await res.json()
-          dispatch(json)
-        }
+        await deleteTodo(action)
         break
       }
     default:
