@@ -14,19 +14,18 @@ interface PropsWithDispatch {
   dispatch: any
   action: any
   todos: TodoState[]
+  user: any
 }
 
 const TodoList = withStyles(styles)(
   class extends React.Component<PropsWithDispatch & WithStyles<typeof styles>, {}> {
     on_click_li = (e: React.MouseEvent<HTMLDivElement>) => {
-      var id:number;
-      id = +(e.currentTarget.id)
+      var id:string = e.currentTarget.id
       this.props.action(this.props.dispatch, completeTodo(id));
     }
 
     on_click_for_del = (e: React.MouseEvent<HTMLButtonElement>) => {
-      var id:number;
-      id = +(e.currentTarget.id)
+      var id:string = e.currentTarget.id
       this.props.action(this.props.dispatch, deleteTodo(id))
     }
 
@@ -59,10 +58,18 @@ const TodoList = withStyles(styles)(
     }
 
     render() {
+      const { user } = this.props
+      if(user.init) {
+        if(user.login) {
+          return (
+            <List>
+            {this.listItems()}
+            </List>
+          )
+        }
+      }
       return (
-        <List>
-          {this.listItems()}
-        </List>
+        <></>
       )
     }
   });

@@ -16,60 +16,60 @@ describe('todo actions', () => {
 
   describe('completeTodo should crate COMPLETE_TODO action', () => {
     it('with zero', () => {
-      expect(actions.completeTodo(0)).toEqual({
+      expect(actions.completeTodo("0")).toEqual({
         type: 'COMPLETE_TODO',
-        id: 0,
+        id: "0",
       })
     })
 
     it('with one', () => {
-      expect(actions.completeTodo(1)).toEqual({
+      expect(actions.completeTodo("1")).toEqual({
         type: 'COMPLETE_TODO',
-        id: 1,
+        id: "1",
       })
     })
 
     it('with huge value', () => {
-      expect(actions.completeTodo(9223372036854775807)).toEqual({
+      expect(actions.completeTodo("9223372036854775807")).toEqual({
         type: 'COMPLETE_TODO',
-        id: 9223372036854775807,
+        id: "9223372036854775807",
       })
     })
 
     it('with negative value', () => {
-      expect(actions.completeTodo(-1234)).toEqual({
+      expect(actions.completeTodo("-1234")).toEqual({
         type: 'COMPLETE_TODO',
-        id: -1234,
+        id: "-1234",
       })
     })
   })
 
   describe('deleteTodo should crate DELETE_TODO action', () => {
     it('with zero', () => {
-      expect(actions.deleteTodo(0)).toEqual({
+      expect(actions.deleteTodo("0")).toEqual({
         type: 'DELETE_TODO',
-        id: 0,
+        id: "0",
       })
     })
 
     it('with one', () => {
-      expect(actions.deleteTodo(1)).toEqual({
+      expect(actions.deleteTodo("1")).toEqual({
         type: 'DELETE_TODO',
-        id: 1,
+        id: "1",
       })
     })
 
     it('with huge value', () => {
-      expect(actions.deleteTodo(9223372036854775807)).toEqual({
+      expect(actions.deleteTodo("9223372036854775807")).toEqual({
         type: 'DELETE_TODO',
-        id: 9223372036854775807,
+        id: "9223372036854775807",
       })
     })
 
     it('with negative value', () => {
-      expect(actions.deleteTodo(-1234)).toEqual({
+      expect(actions.deleteTodo("-1234")).toEqual({
         type: 'DELETE_TODO',
-        id: -1234,
+        id: "-1234",
       })
     })
   })

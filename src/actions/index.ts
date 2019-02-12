@@ -1,6 +1,6 @@
 export interface TodoAction {
 	type: string;
-	id: number;
+	id: string;
 	text: string;
 }
 
@@ -9,12 +9,12 @@ export const addTodo = (text:string) => ({
   text
 })
 
-export const completeTodo = (id:number) => ({
+export const completeTodo = (id:string) => ({
   type: 'COMPLETE_TODO',
   id: id,
 })
 
-export const deleteTodo = (id:number) => ({
+export const deleteTodo = (id:string) => ({
   type: 'DELETE_TODO',
   id: id,
 })
