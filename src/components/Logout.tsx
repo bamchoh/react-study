@@ -14,12 +14,13 @@ import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 interface PropsWithDispatch {
   dispatch: any
   action: any
+  user: any
 }
 
 const Logout = withStyles(styles)(
   class extends React.Component<PropsWithDispatch & WithStyles<typeof styles>, {}> {
     render() {
-      const { classes } = this.props
+      const { classes, user } = this.props
       const { action, dispatch } = this.props
 
       const signOut = () => {
@@ -32,10 +33,17 @@ const Logout = withStyles(styles)(
         });
       }
 
+      if(user.init) {
+        if(user.login) {
+          return (
+            <Button color="primary" variant="outlined" onClick={signOut} className={classes.button}>
+            Sign out
+            </Button>
+          )
+        }
+      }
       return (
-        <Button color="primary" variant="outlined" onClick={signOut} className={classes.button}>
-        Sign out
-        </Button>
+        <></>
       )
     }
   }

@@ -16,8 +16,8 @@ const todos = (state:TodoState[] = [], action:any) => {
         ...state,
         action.payload
       ]
-    case 'todos/child_deleted':
-      return state.filter(({id}) => id !== action.id)
+    case 'todos/child_removed':
+      return state.filter(({id}) => id !== action.payload.id)
     case 'todos/child_changed':
       return state.map(todo => {
         if(todo.id === action.payload.id) {

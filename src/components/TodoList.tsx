@@ -14,6 +14,7 @@ interface PropsWithDispatch {
   dispatch: any
   action: any
   todos: TodoState[]
+  user: any
 }
 
 const TodoList = withStyles(styles)(
@@ -57,10 +58,18 @@ const TodoList = withStyles(styles)(
     }
 
     render() {
+      const { user } = this.props
+      if(user.init) {
+        if(user.login) {
+          return (
+            <List>
+            {this.listItems()}
+            </List>
+          )
+        }
+      }
       return (
-        <List>
-          {this.listItems()}
-        </List>
+        <></>
       )
     }
   });

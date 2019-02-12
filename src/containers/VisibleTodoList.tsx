@@ -6,11 +6,13 @@ import { TodoState } from '../reducers/todos'
 
 export interface CombineState {
 	todos: TodoState[]
+  user: any
 }
 
 const mapStateToProps = (state:CombineState) => {
   return({
-    todos: state.todos
+    todos: state.todos,
+    user: state.user
   })
 }
 

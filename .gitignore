@@ -85,3 +85,6 @@ __snapshots__/
 *.db
 
 /public
+
+/.firebase
+

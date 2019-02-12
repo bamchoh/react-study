@@ -10,6 +10,7 @@ import addTodo from '../actions'
 interface PropsWithDispatch {
   dispatch: any
   action: any
+  user: any
 }
 
 const AddTodo = withStyles(styles)(
@@ -25,12 +26,19 @@ const AddTodo = withStyles(styles)(
     }
 
     render() {
-      const { classes } = this.props
+      const { classes, user } = this.props
+      if(user.init) {
+        if(user.login) {
+          return (
+            <div>
+            <Button color="primary" variant="contained" onClick={this.on_click} className={classes.button}>+</Button>
+            <Input inputRef={this.textRef} type="text" />
+            </div>
+          )
+        }
+      }
       return (
-        <div>
-          <Button color="primary" variant="contained" onClick={this.on_click} className={classes.button}>+</Button>
-          <Input inputRef={this.textRef} type="text" />
-        </div>
+        <></>
       )
     }
   });
