@@ -1,136 +1,132 @@
 import * as fetchMock from 'fetch-mock'
-import sendToApiServer from './sendToApiServer'
+import DatabaseBridge from './sendToApiServer'
 
-describe('sendToApiServer', () => {
-  it('ADD_TODO', async () => {
-    const action = {
-      type: 'ADD_TODO',
-      text: "test",
-    }
 
-    fetchMock.post('/api/add_todo', {body: {'type':'ADD_TODO', 'text':'test'}, status: 200});
-
+describe('DatabaseBridge', () => {
+  it('addTodo() should work well', () => {
     const mockDispatch = jest.fn()
+    const mockDbSet = jest.fn()
+    const mockDbRef = jest.fn(() => {
+      return {
+        push: () => {
+          return {
+            set: mockDbSet,
+            key: "1"
+          }
+        }
+      }
+    })
+    const bridge = new DatabaseBridge(mockDispatch)
+    const mockGetDatabase = jest.spyOn(bridge, 'getDatabase');
+    mockGetDatabase.mockImplementation(() => {
+      return { ref: mockDbRef }
+    })
+    bridge.uid = ""
+    bridge.addTodo("test")
 
-    await sendToApiServer(mockDispatch, action)
+    expect(mockGetDatabase.mock.calls.length).toBe(1)
+    expect(mockDispatch.mock.calls.length).toBe(0)
+    expect(mockDbRef.mock.calls.length).toBe(0)
+    expect(mockDbSet.mock.calls.length).toBe(0)
 
-    expect(mockDispatch.mock.calls.length).toBe(1)
-    expect(mockDispatch.mock.calls[0][0]).toEqual(action)
+    bridge.uid = "user1"
+    bridge.addTodo("todo 1")
+    expect(mockGetDatabase.mock.calls.length).toBe(2)
+    expect(mockDispatch.mock.calls.length).toBe(0)
+    expect(mockDbRef.mock.calls.length).toBe(1)
+    expect(mockDbRef.mock.calls[0][0]).toEqual("todos/user1")
+    expect(mockDbSet.mock.calls.length).toBe(1)
+    expect(mockDbSet.mock.calls[0][0]).toEqual({id:"1", text:"todo 1", completed: false})
   })
 
-  it('COMPLETE_TODO', async () => {
-    const action = {
-      type: 'COMPLETE_TODO',
-      id: 0,
-    }
-
-    fetchMock.post('/api/complete_todo', {body: {'type':'COMPLETE_TODO', 'id':0}, status: 200});
-
+  it('complatedTodo() should work well', () => {
     const mockDispatch = jest.fn()
+    const mockDbSet = jest.fn()
+    const mockDbOnce = jest
+      .fn()
+      .mockImplementationOnce(() => {
+        return {
+          then: (fn:any) => {
+            fn({ val: () => { return false }})
+          }
+        }
+      })
+      .mockImplementationOnce(() => {
+        return {
+          then: (fn:any) => {
+            fn({ val: () => { return true }})
+          }
+        }
+      })
+    const mockDbRef = jest.fn(() => {
+      return {
+        once: mockDbOnce,
+        set: mockDbSet
+      }
+    })
+    const bridge = new DatabaseBridge(mockDispatch)
+    const mockGetDatabase = jest.spyOn(bridge, 'getDatabase');
+    mockGetDatabase.mockImplementation(() => {
+      return { ref: mockDbRef }
+    })
+    bridge.uid = ""
+    bridge.completeTodo("abcdefg1234")
 
-    await sendToApiServer(mockDispatch, action)
+    expect(mockGetDatabase.mock.calls.length).toBe(1)
+    expect(mockDispatch.mock.calls.length).toBe(0)
+    expect(mockDbRef.mock.calls.length).toBe(0)
+    expect(mockDbSet.mock.calls.length).toBe(0)
 
-    expect(mockDispatch.mock.calls.length).toBe(1)
-    expect(mockDispatch.mock.calls[0][0]).toEqual(action)
+    bridge.uid = "user1"
+
+    bridge.completeTodo("abcdefg1234")
+    expect(mockGetDatabase.mock.calls.length).toBe(2)
+    expect(mockDispatch.mock.calls.length).toBe(0)
+    expect(mockDbRef.mock.calls.length).toBe(1)
+    expect(mockDbRef.mock.calls[0][0]).toEqual("todos/user1/abcdefg1234/completed")
+    expect(mockDbOnce.mock.calls.length).toBe(1)
+    expect(mockDbOnce.mock.calls[0][0]).toEqual('value')
+    expect(mockDbSet.mock.calls.length).toBe(1)
+    expect(mockDbSet.mock.calls[0][0]).toEqual(true)
+
+    bridge.completeTodo("abcdefg1234")
+    expect(mockGetDatabase.mock.calls.length).toBe(3)
+    expect(mockDispatch.mock.calls.length).toBe(0)
+    expect(mockDbRef.mock.calls.length).toBe(2)
+    expect(mockDbRef.mock.calls[1][0]).toEqual("todos/user1/abcdefg1234/completed")
+    expect(mockDbOnce.mock.calls.length).toBe(2)
+    expect(mockDbOnce.mock.calls[1][0]).toEqual('value')
+    expect(mockDbSet.mock.calls.length).toBe(2)
+    expect(mockDbSet.mock.calls[1][0]).toEqual(false)
   })
 
-  it('DELETE_TODO', async () => {
-    const action = {
-      type: 'DELETE_TODO',
-      id: 0,
-    }
-
-    fetchMock.post('/api/delete_todo', {body: {'type':'DELETE_TODO', 'id':0}, status: 200});
-
+  it('deleteTodo() should work well', () => {
     const mockDispatch = jest.fn()
-
-    await sendToApiServer(mockDispatch, action)
-
-    expect(mockDispatch.mock.calls.length).toBe(1)
-    expect(mockDispatch.mock.calls[0][0]).toEqual(action)
-  })
-
-  describe('FETCH_TODO', () => {
-    it('returned data is null', async () => {
-      const action = {
-        type: 'FETCH_TODO',
-        id: 0,
+    const mockDbRemove = jest.fn()
+    const mockDbRef = jest.fn(() => {
+      return {
+        remove: mockDbRemove
       }
-
-      fetchMock.get('/api/fetch_todo', {body: {'type':'FETCH_TODO', 'data':null}, status: 200});
-
-      const mockDispatch = jest.fn()
-
-      await sendToApiServer(mockDispatch, action)
-
-      expect(mockDispatch.mock.calls.length).toBe(1)
-      expect(mockDispatch.mock.calls[0][0]).toEqual({'type':'FETCH_TODO', 'data':null})
-
-      fetchMock.restore();
     })
-
-    it('returned data is empty', async () => {
-      const action = {
-        type: 'FETCH_TODO',
-        id: 0,
-      }
-
-      fetchMock.get('/api/fetch_todo', {body: {'type':'FETCH_TODO', 'data':[]}, status: 200});
-
-      const mockDispatch = jest.fn()
-
-      await sendToApiServer(mockDispatch, action)
-
-      expect(mockDispatch.mock.calls.length).toBe(1)
-      expect(mockDispatch.mock.calls[0][0]).toEqual({'type':'FETCH_TODO', 'data':[]})
-
-      fetchMock.restore();
+    const bridge = new DatabaseBridge(mockDispatch)
+    const mockGetDatabase = jest.spyOn(bridge, 'getDatabase');
+    mockGetDatabase.mockImplementation(() => {
+      return { ref: mockDbRef }
     })
+    bridge.uid = ""
+    bridge.deleteTodo("abcdefg1234")
 
-    it('returned data is 1', async () => {
-      const action = {
-        type: 'FETCH_TODO',
-        id: 0,
-      }
+    expect(mockGetDatabase.mock.calls.length).toBe(1)
+    expect(mockDispatch.mock.calls.length).toBe(0)
+    expect(mockDbRef.mock.calls.length).toBe(0)
+    expect(mockDbRemove.mock.calls.length).toBe(0)
 
-      fetchMock.get('/api/fetch_todo', {body: {'type':'FETCH_TODO', 'data':[
-        { 'type':'', 'text':'aaa', 'id':0, 'completed':false },
-      ]}, status: 200});
-
-      const mockDispatch = jest.fn()
-
-      await sendToApiServer(mockDispatch, action)
-
-      expect(mockDispatch.mock.calls.length).toBe(1)
-      expect(mockDispatch.mock.calls[0][0]).toEqual({'type':'FETCH_TODO', 'data':[
-        { 'type':'', 'text':'aaa', 'id':0, 'completed':false },
-      ]})
-
-      fetchMock.restore();
-    })
-
-    it('returned data is 2', async () => {
-      const action = {
-        type: 'FETCH_TODO',
-        id: 0,
-      }
-
-      fetchMock.get('/api/fetch_todo', {body: {'type':'FETCH_TODO', 'data':[
-        { 'type':'', 'text':'aaa', 'id':0, 'completed':false },
-        { 'type':'', 'text':'bbb', 'id':1, 'completed':true },
-      ]}, status: 200});
-
-      const mockDispatch = jest.fn()
-
-      await sendToApiServer(mockDispatch, action)
-
-      expect(mockDispatch.mock.calls.length).toBe(1)
-      expect(mockDispatch.mock.calls[0][0]).toEqual({'type':'FETCH_TODO', 'data':[
-        { 'type':'', 'text':'aaa', 'id':0, 'completed':false },
-        { 'type':'', 'text':'bbb', 'id':1, 'completed':true },
-      ]})
-
-      fetchMock.restore();
-    })
+    bridge.uid = "user1"
+    bridge.deleteTodo("abcdefg1234")
+    expect(mockGetDatabase.mock.calls.length).toBe(2)
+    expect(mockDispatch.mock.calls.length).toBe(0)
+    expect(mockDbRef.mock.calls.length).toBe(1)
+    expect(mockDbRef.mock.calls[0][0]).toEqual("todos/user1/abcdefg1234")
+    expect(mockDbRemove.mock.calls.length).toBe(1)
   })
 })

@@ -5,6 +5,11 @@ import { TodoState } from '../reducers/todos'
 import TodoList from './TodoList'
 import ListItem from '@material-ui/core/ListItem';
 
+const initUser = {
+  init:true,
+  login:true,
+}
+
 describe('TodoList', () => {
   describe('should send COMPLETE_TODO action when click ListItem', () => {
     it('1 state, click first list', () => {
@@ -16,7 +21,7 @@ describe('TodoList', () => {
           completed:false,
         }
       ]
-      const wrapper = shallow(<TodoList action={spy} todos={state} dispatch={{}} user={{}}/>);
+      const wrapper = shallow(<TodoList action={spy} todos={state} dispatch={{}} user={initUser}/>);
       const mockedEvent = { currentTarget: { id: "0" }};
       wrapper.dive().find(ListItem).at(0).simulate('click', mockedEvent);
       // componentWillMount() と on_click_li() の両方でactionが呼ばれるため2になる
@@ -31,7 +36,7 @@ describe('TodoList', () => {
         { id:"0", text:"aaa", completed:false, },
         { id:"1", text:"bbb", completed:false, }
       ]
-      const wrapper = shallow(<TodoList action={spy} todos={state} dispatch={{}} user={{}}/>);
+      const wrapper = shallow(<TodoList action={spy} todos={state} dispatch={{}} user={initUser}/>);
       const mockedEvent0 = { currentTarget: { id: "0" }};
       wrapper.dive().find(ListItem).at(0).simulate('click', mockedEvent0);
       expect(spy.callCount).toEqual(2)
@@ -52,7 +57,7 @@ describe('TodoList', () => {
         { id:"1", text:"bbb", completed:false, },
         { id:"2", text:"ccc", completed:false, }
       ]
-      const wrapper = shallow(<TodoList action={spy} todos={state} dispatch={{}} user={{}}/>);
+      const wrapper = shallow(<TodoList action={spy} todos={state} dispatch={{}} user={initUser}/>);
       const mockedEvent0 = { currentTarget: { id: "2" }};
       wrapper.dive().find(ListItem).at(2).simulate('click', mockedEvent0);
       expect(spy.callCount).toEqual(2)
@@ -69,7 +74,7 @@ describe('TodoList', () => {
         { id:"1", text:"bbb", completed:false, },
         { id:"2", text:"ccc", completed:false, }
       ]
-      const wrapper = mount(<TodoList action={spy} todos={state} dispatch={{}} user={{}}/>);
+      const wrapper = mount(<TodoList action={spy} todos={state} dispatch={{}} user={initUser}/>);
       const mockedEvent0 = { currentTarget: { id: "2" }};
       expect(spy.callCount).toEqual(1)
       expect(spy.getCall(0).args[0]).toEqual({})
