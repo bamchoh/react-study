@@ -22,7 +22,7 @@ describe('DatabaseBridge', () => {
       return { ref: mockDbRef }
     })
     bridge.uid = ""
-    bridge.addTodo({type: "todos/add_todo", payload: { text: "text"} })
+    bridge.addTodo({ text: "text"})
 
     expect(mockGetDatabase.mock.calls.length).toBe(1)
     expect(mockDispatch.mock.calls.length).toBe(0)
@@ -30,7 +30,7 @@ describe('DatabaseBridge', () => {
     expect(mockDbSet.mock.calls.length).toBe(0)
 
     bridge.uid = "user1"
-    bridge.addTodo({type: "todos/add_todo", payload: { text: "todo 1"} })
+    bridge.addTodo({ text: "todo 1"})
     expect(mockGetDatabase.mock.calls.length).toBe(2)
     expect(mockDispatch.mock.calls.length).toBe(0)
     expect(mockDbRef.mock.calls.length).toBe(1)
@@ -79,7 +79,7 @@ describe('DatabaseBridge', () => {
 
     bridge.uid = "user1"
 
-    bridge.completeTodo({type:'todos/complete_todo', payload: { id: "abcdefg1234"} })
+    bridge.completeTodo({ id: "abcdefg1234"})
     expect(mockGetDatabase.mock.calls.length).toBe(2)
     expect(mockDispatch.mock.calls.length).toBe(0)
     expect(mockDbRef.mock.calls.length).toBe(1)
@@ -89,7 +89,7 @@ describe('DatabaseBridge', () => {
     expect(mockDbSet.mock.calls.length).toBe(1)
     expect(mockDbSet.mock.calls[0][0]).toEqual(true)
 
-    bridge.completeTodo({type:'todos/complete_todo', payload: { id: "abcdefg1234"} })
+    bridge.completeTodo({ id: "abcdefg1234"})
     expect(mockGetDatabase.mock.calls.length).toBe(3)
     expect(mockDispatch.mock.calls.length).toBe(0)
     expect(mockDbRef.mock.calls.length).toBe(2)
@@ -114,7 +114,7 @@ describe('DatabaseBridge', () => {
       return { ref: mockDbRef }
     })
     bridge.uid = ""
-    bridge.deleteTodo({type: 'todos/delete_todo', payload: { id: "abcdefg1234"}})
+    bridge.deleteTodo({ id: "abcdefg1234"})
 
     expect(mockGetDatabase.mock.calls.length).toBe(1)
     expect(mockDispatch.mock.calls.length).toBe(0)
@@ -122,7 +122,7 @@ describe('DatabaseBridge', () => {
     expect(mockDbRemove.mock.calls.length).toBe(0)
 
     bridge.uid = "user1"
-    bridge.deleteTodo({type: 'todos/delete_todo', payload: { id: "abcdefg1234"}})
+    bridge.deleteTodo({ id: "abcdefg1234"})
     expect(mockGetDatabase.mock.calls.length).toBe(2)
     expect(mockDispatch.mock.calls.length).toBe(0)
     expect(mockDbRef.mock.calls.length).toBe(1)
@@ -141,13 +141,13 @@ describe('DatabaseBridge', () => {
       return {}
     })
     bridge.uid = ""
-    bridge.initdb({type: 'todos/change_users', payload: { uid: "abcdefg1234", username: 'user1' }})
+    bridge.initdb({uid: "abcdefg1234", username: 'user1' })
 
     expect(mockGetDatabase.mock.calls.length).toBe(1)
     expect(mockDispatch.mock.calls.length).toBe(1)
     expect(mock1.mock.calls.length).toBe(1)
     expect(mock1.mock.calls[0][0]).toEqual({})
-    expect(mock1.mock.calls[0][1]).toEqual({type: 'todos/change_users', payload: { uid: 'abcdefg1234', username: 'user1'}})
+    expect(mock1.mock.calls[0][1]).toEqual({uid: 'abcdefg1234', username: 'user1'})
     expect(mock2.mock.calls.length).toBe(1)
     expect(mock2.mock.calls[0][0]).toEqual({})
     expect(mock3.mock.calls.length).toBe(1)
@@ -158,7 +158,6 @@ describe('DatabaseBridge', () => {
   })
 
   it('changeUsersEvent() should work well', () => {
-    const action = {type: 'todos/change_users', payload: { username: 'user1' }};
     const mockDispatch = jest.fn()
     const mockDbSet = jest.fn()
     const mockDbOnce = jest
@@ -187,7 +186,8 @@ describe('DatabaseBridge', () => {
     const db = { ref: mockDbRef }
     bridge.uid = "abcdefg1234"
 
-    bridge.changeUsersEvent(db, action)
+    const payload = { username: 'user1' };
+    bridge.changeUsersEvent(db, payload)
     expect(mockDbRef.mock.calls.length).toBe(1)
     expect(mockDbRef.mock.calls[0][0]).toEqual("users/abcdefg1234")
     expect(mockDbOnce.mock.calls.length).toBe(1)
@@ -197,7 +197,7 @@ describe('DatabaseBridge', () => {
     expect(mockDispatch.mock.calls.length).toBe(1)
     expect(mockDispatch.mock.calls[0][0]).toEqual({type: 'user/change_username', payload: { username: 'user1' }})
 
-    bridge.changeUsersEvent(db, action)
+    bridge.changeUsersEvent(db, payload)
     expect(mockDbRef.mock.calls.length).toBe(2)
     expect(mockDbRef.mock.calls[0][0]).toEqual("users/abcdefg1234")
     expect(mockDbOnce.mock.calls.length).toBe(2)

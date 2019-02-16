@@ -15,17 +15,17 @@ export class DatabaseBridge {
     return firebase.database;
   }
 
-  changeUsersEvent(database:any, action:any) {
+  changeUsersEvent(database:any, payload:any) {
     const usersRef = database.ref(`users/${this.uid}`)
     usersRef.once('value').then((snapshot:any) => {
       if(snapshot.val() === null) {
         usersRef.set({
-          username: action.payload.username
+          username: payload.username
         });
         this.dispatch({
           type: 'user/change_username',
           payload: {
-            username: action.payload.username
+            username: payload.username
           }
         });
       } else {
@@ -82,14 +82,14 @@ export class DatabaseBridge {
     })
   }
 
-  initdb(action:any) {
-    if(action.payload.uid !== "") {
-      this.uid = action.payload.uid;
+  initdb(payload:any) {
+    if(payload.uid !== "") {
+      this.uid = payload.uid;
     }
 
     const database:any = this.getDatabase()
 
-    this.changeUsersEvent(database, action)
+    this.changeUsersEvent(database, payload)
 
     this.childAddEvent(database)
 
@@ -97,11 +97,11 @@ export class DatabaseBridge {
 
     this.childChangedEvent(database)
 
-    this.dispatch(action)
+    this.dispatch({type: 'todos/change_users', payload: payload})
   }
 
-  addTodo(action:any) {
-    const text:string = action.payload.text
+  addTodo(payload:any) {
+    const text:string = payload.text
     const database:any = this.getDatabase();
 
     if(this.uid == "") {
@@ -116,8 +116,8 @@ export class DatabaseBridge {
     })
   }
 
-  completeTodo(action:any) {
-    const id:string = action.payload.id
+  completeTodo(payload:any) {
+    const id:string = payload.id
     const database:any = this.getDatabase();
 
     if(this.uid == "") {
@@ -130,8 +130,8 @@ export class DatabaseBridge {
     })
   }
 
-  deleteTodo(action:any) {
-    const id:string = action.payload.id
+  deleteTodo(payload:any) {
+    const id:string = payload.id
     const database:any = this.getDatabase();
 
     if(this.uid == "") {
@@ -139,6 +139,16 @@ export class DatabaseBridge {
     }
 
     database.ref(`todos/${this.uid}/${id}`).remove()
+  }
+
+  initDone() {
+    const action = { type: 'user/init_done' }
+    this.dispatch(action)
+  }
+
+  signOut() {
+    const action = { type: 'user/signout' }
+    this.dispatch(action)
   }
 }
 

@@ -7,11 +7,9 @@ import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
 import styles from '../css/style';
-import { completeTodo, deleteTodo, fetchTodo } from '../actions'
 import { TodoState } from '../reducers/todos'
 
 interface PropsWithDispatch {
-  dispatch: any
   action: any
   todos: TodoState[]
   user: any
@@ -21,16 +19,12 @@ const TodoList = withStyles(styles)(
   class extends React.Component<PropsWithDispatch & WithStyles<typeof styles>, {}> {
     on_click_li = (e: React.MouseEvent<HTMLDivElement>) => {
       var id:string = e.currentTarget.id
-      this.props.action(this.props.dispatch, completeTodo(id));
+      this.props.action.completeTodo({id: id});
     }
 
     on_click_for_del = (e: React.MouseEvent<HTMLButtonElement>) => {
       var id:string = e.currentTarget.id
-      this.props.action(this.props.dispatch, deleteTodo(id))
-    }
-
-    componentWillMount() {
-      this.props.action(this.props.dispatch, fetchTodo());
+      this.props.action.deleteTodo({id: id})
     }
 
     drawItems = (item: TodoState) => {
