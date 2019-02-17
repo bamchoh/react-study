@@ -75,7 +75,6 @@ class Login extends React.Component<PropsWithDispatch, {}> {
       } else {
         return(
           <>
-          <div>{user.username}</div>
           </>
         )
       }
