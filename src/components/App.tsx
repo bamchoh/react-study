@@ -20,10 +20,10 @@ const App = withStyles(styles)(
       const bridge = new DatabaseBridge(dispatch)
       return (
         <div className={classes.root}>
+          <LogoutContainer action={bridge} />
           <LoginContainer action={bridge} />
           <AddTodoContainer action={bridge} />
           <VisibleTodoList action={bridge} />
-          <LogoutContainer action={bridge} />
         </div>
       )
     }

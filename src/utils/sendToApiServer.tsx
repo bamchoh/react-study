@@ -86,8 +86,11 @@ export class DatabaseBridge {
   }
 
   initdb(payload:any) {
-    if(payload.uid !== "") {
-      this.uid = payload.uid;
+    this.uid = payload.uid;
+
+    if(this.uid == "") {
+      this.dispatch({type: 'user/change_user', payload: payload})
+      return
     }
 
     const database:any = this.getDatabase()
