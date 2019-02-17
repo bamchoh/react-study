@@ -16,7 +16,6 @@ import * as firebaseui from 'firebaseui';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 
 interface PropsWithDispatch {
-  dispatch: any
   action: any
   user: UserState
 }
@@ -54,19 +53,14 @@ class Login extends React.Component<PropsWithDispatch, {}> {
   componentWillMount() {
     firebase.auth().onAuthStateChanged((user:any) => {
       if(firebase.auth().currentUser !== null) {
-        this.props.action(this.props.dispatch, {
-          type: 'user/change_user',
-          payload: {
-            login: true,
-            username: user.displayName,
-            uid: user.uid
-          }
-        });
+        this.props.action.initdb({
+          login: true,
+          uid: user.uid,
+          username: user.displayName
+        })
       }
 
-      this.props.action(this.props.dispatch, {
-        type: 'user/init_done'
-      })
+      this.props.action.initDone()
     })
   }
 

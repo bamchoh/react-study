@@ -7,12 +7,15 @@ describe('todo reducer', () => {
     ).toEqual([])
   })
 
-  it('should handle ADD_TODO', () => {
+  it('should handle todos/child_added', () => {
     expect(
       todos([], {
-        type: 'ADD_TODO',
-        text: 'Run the tests',
-        id: "0"
+        type: 'todos/child_added',
+        payload: {
+          text: 'Run the tests',
+          completed: false,
+          id: "0"
+        }
       })
     ).toEqual([
       {
@@ -30,9 +33,12 @@ describe('todo reducer', () => {
           id: "0"
         }
       ], {
-        type: 'ADD_TODO',
-        text: 'Use Redux',
-        id: "1"
+        type: 'todos/child_added',
+        payload: {
+          text: 'Use Redux',
+          completed: false,
+          id: "1"
+        }
       })
     ).toEqual([
       {
@@ -58,9 +64,12 @@ describe('todo reducer', () => {
           id: "1"
         }
       ], {
-        type: 'ADD_TODO',
-        text: 'Fix tests',
-        id: "2"
+        type: 'todos/child_added',
+        payload: {
+          text: 'Fix tests',
+          completed: false,
+          id: "2"
+        }
       })
     ).toEqual([
       {
@@ -79,7 +88,7 @@ describe('todo reducer', () => {
     ])
   })
 
-  it('should handle COMPLETE_TODO', () => {
+  it('should handle todos/child_changed', () => {
     expect(
       todos([
         {
@@ -92,8 +101,12 @@ describe('todo reducer', () => {
           id: "0"
         }
       ], {
-        type: 'COMPLETE_TODO',
-        id: "1"
+        type: 'todos/child_changed',
+        payload: {
+          text: 'Run the tests',
+          completed: true,
+          id: "1"
+        }
       })
     ).toEqual([
       {
@@ -119,8 +132,12 @@ describe('todo reducer', () => {
           id: "0"
         }
       ], {
-        type: 'COMPLETE_TODO',
-        id: "1"
+        type: 'todos/child_changed',
+        payload: {
+          text: 'Run the tests',
+          completed: false,
+          id: "1"
+        }
       })
     ).toEqual([
       {
@@ -135,11 +152,15 @@ describe('todo reducer', () => {
     ])
   })
 
-  it('should handle DELETE_TODO', () => {
+  it('should handle todos/child_removed', () => {
     expect(
       todos([], {
-        type: 'DELETE_TODO',
-        id: "0",
+        type: 'todos/child_removed',
+        payload: {
+          text: "",
+          completed: false,
+          id: "0",
+        }
       })
     ).toEqual([])
 
@@ -151,8 +172,12 @@ describe('todo reducer', () => {
           id: "0"
         }
       ], {
-        type: 'DELETE_TODO',
-        id: "0",
+        type: 'todos/child_removed',
+        payload: {
+          text: 'Run the tests',
+          completed: true,
+          id: "0",
+        }
       })
     ).toEqual([])
 
@@ -168,8 +193,12 @@ describe('todo reducer', () => {
           id: "9"
         }
       ], {
-        type: 'DELETE_TODO',
-        id: "9",
+        type: 'todos/child_removed',
+        payload: {
+          text: 'Use Redux',
+          completed: false,
+          id: "9"
+        }
       })
     ).toEqual([
       {
@@ -195,8 +224,12 @@ describe('todo reducer', () => {
           id: "8"
         }
       ], {
-        type: 'DELETE_TODO',
-        id: "9",
+        type: 'todos/child_removed',
+        payload: {
+          text: 'Use Redux',
+          completed: false,
+          id: "9"
+        }
       })
     ).toEqual([
       {
@@ -207,75 +240,6 @@ describe('todo reducer', () => {
         text: 'Fix tests',
         completed: false,
         id: "8"
-      }
-    ])
-  })
-
-  it('should handle FETCH_TODO', () => {
-    expect(
-      todos([], {
-        type: "FETCH_TODO",
-      })
-    ).toEqual([])
-
-    expect(
-      todos([], {
-        type: "FETCH_TODO",
-        data: null,
-      })
-    ).toEqual([])
-
-    expect(
-      todos([], {
-        type: "FETCH_TODO",
-        data: [
-          {
-            text: "Run the tests",
-            completed: false,
-            id: "0"
-          }
-        ],
-      })
-    ).toEqual([
-      {
-        text: "Run the tests",
-        completed: false,
-        id: "0"
-      }
-    ])
-
-    expect(
-      todos([], {
-        type: "FETCH_TODO",
-        data: [
-          {
-            text: "Run the tests",
-            completed: false,
-            id: "0"
-          }, {
-            text: "Use Redux",
-            completed: true,
-            id: "1"
-          }, {
-            text: "Fix tests",
-            completed: false,
-            id: "2"
-          }
-        ],
-      })
-    ).toEqual([
-      {
-        text: "Run the tests",
-        completed: false,
-        id: "0"
-      }, {
-        text: "Use Redux",
-        completed: true,
-        id: "1"
-      }, {
-        text: "Fix tests",
-        completed: false,
-        id: "2"
       }
     ])
   })

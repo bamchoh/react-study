@@ -12,7 +12,6 @@ import * as firebaseui from 'firebaseui';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 
 interface PropsWithDispatch {
-  dispatch: any
   action: any
   user: any
 }
@@ -21,13 +20,11 @@ const Logout = withStyles(styles)(
   class extends React.Component<PropsWithDispatch & WithStyles<typeof styles>, {}> {
     render() {
       const { classes, user } = this.props
-      const { action, dispatch } = this.props
+      const { action } = this.props
 
       const signOut = () => {
         firebase.auth().signOut().then(() => {
-          action(dispatch({
-            type: 'user/signout',
-          }))
+          action.signOut()
         }).catch(function(error) {
           console.log(error)
         });

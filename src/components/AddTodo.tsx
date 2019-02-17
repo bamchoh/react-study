@@ -8,7 +8,6 @@ import styles from '../css/style';
 import addTodo from '../actions'
 
 interface PropsWithDispatch {
-  dispatch: any
   action: any
   user: any
 }
@@ -21,7 +20,10 @@ const AddTodo = withStyles(styles)(
       if(this.textRef.current!.value == "") {
         return
       }
-      this.props.action(this.props.dispatch, addTodo(this.textRef.current!.value));
+
+      const text = this.textRef.current!.value
+
+      this.props.action.addTodo({ text: text })
       this.textRef.current!.value = "";
     }
 
