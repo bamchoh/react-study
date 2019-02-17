@@ -52,11 +52,17 @@ const uiConfig = {
 class Login extends React.Component<PropsWithDispatch, {}> {
   componentWillMount() {
     firebase.auth().onAuthStateChanged((user:any) => {
-      if(firebase.auth().currentUser !== null) {
+      if(user !== null) {
+        alert(user.uid)
         this.props.action.initdb({
-          login: true,
           uid: user.uid,
           username: user.displayName
+        })
+      } else {
+        alert(user)
+        this.props.action.initdb({
+          uid: "",
+          username: ""
         })
       }
 
@@ -67,21 +73,15 @@ class Login extends React.Component<PropsWithDispatch, {}> {
   render() {
     const { user } = this.props
 
-    if(user.init) {
-      if(!user.login) {
-        return (
-          <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()}/>
-        )
-      } else {
-        return(
-          <>
-          </>
-        )
-      }
+    if(user.init && user.uid === "") {
+      return (
+        <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()}/>
+      )
     }
 
     return(
-      <></>
+      <>
+      </>
     )
   }
 }

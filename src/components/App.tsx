@@ -9,11 +9,6 @@ import LogoutContainer from "../containers/LogoutContainer";
 import styles from '../css/style';
 import DatabaseBridge from '../utils/sendToApiServer'
 
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-
 interface PropsWithDispatch {
   dispatch: any
 }
@@ -25,14 +20,7 @@ const App = withStyles(styles)(
       const bridge = new DatabaseBridge(dispatch)
       return (
         <div className={classes.root}>
-          <AppBar position="fixed">
-            <Toolbar>
-              <Typography variant="h6" color="inherit" className={classes.grow}>
-                TODO Apps
-              </Typography>
-              <LogoutContainer action={bridge} />
-            </Toolbar>
-          </AppBar>
+          <LogoutContainer action={bridge} />
           <LoginContainer action={bridge} />
           <AddTodoContainer action={bridge} />
           <VisibleTodoList action={bridge} />

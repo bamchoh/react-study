@@ -29,15 +29,13 @@ const AddTodo = withStyles(styles)(
 
     render() {
       const { classes, user } = this.props
-      if(user.init) {
-        if(user.login) {
-          return (
-            <div>
-            <Button color="primary" variant="contained" onClick={this.on_click} className={classes.button}>+</Button>
-            <Input inputRef={this.textRef} type="text" />
-            </div>
-          )
-        }
+      if(user.init && user.uid !== "") {
+        return (
+          <div>
+          <Button color="primary" variant="contained" onClick={this.on_click} className={classes.button}>+</Button>
+          <Input inputRef={this.textRef} type="text" />
+          </div>
+        )
       }
       return (
         <></>
