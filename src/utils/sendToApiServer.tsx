@@ -1,18 +1,21 @@
 import { Dispatch} from "redux";
 import * as firebase from "firebase/app";
 import 'firebase/database';
+import 'firebase/auth';
 
 export class DatabaseBridge {
   uid:string;
   dispatch:any;
+  database:any;
 
   constructor(dispatch:any) {
     this.uid = "";
     this.dispatch = dispatch;
+    this.database = firebase.database;
   }
 
   getDatabase() {
-    return firebase.database;
+    return firebase.database();
   }
 
   changeUsersEvent(database:any, payload:any) {
@@ -50,7 +53,7 @@ export class DatabaseBridge {
         })
       }
     }, function(error:any) {
-      console.log(error)
+      // console.log(error)
     })
   }
 
@@ -64,7 +67,7 @@ export class DatabaseBridge {
         })
       }
     }, function(error:any) {
-      console.log(error)
+      // console.log(error)
     })
   }
 
@@ -78,7 +81,7 @@ export class DatabaseBridge {
         })
       }
     }, function(error:any) {
-      console.log(error)
+      // console.log(error)
     })
   }
 
@@ -97,7 +100,7 @@ export class DatabaseBridge {
 
     this.childChangedEvent(database)
 
-    this.dispatch({type: 'todos/change_users', payload: payload})
+    this.dispatch({type: 'user/change_user', payload: payload})
   }
 
   addTodo(payload:any) {
