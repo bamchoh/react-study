@@ -15,7 +15,7 @@ module.exports = {
   entry: "./src/index.tsx",
 
   output: {
-    filename: "bundle.js",
+    filename: "[name].[contenthash].js",
     path: __dirname + "/public"
   },
 

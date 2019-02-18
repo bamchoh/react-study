@@ -16,7 +16,7 @@ const AddTodo = withStyles(styles)(
   class extends React.Component<PropsWithDispatch & WithStyles<typeof styles>, {}> {
     textRef = React.createRef<HTMLInputElement>();
 
-    on_click = () => {
+    add_todo() {
       if(this.textRef.current!.value == "") {
         return
       }
@@ -27,13 +27,18 @@ const AddTodo = withStyles(styles)(
       this.textRef.current!.value = "";
     }
 
+    key_press = (e:any) => {
+      if(e.keyCode == 13) {
+        this.add_todo()
+      }
+    }
+
     render() {
       const { classes, user } = this.props
       if(user.init && user.uid !== "") {
         return (
           <div>
-          <Button color="primary" variant="contained" onClick={this.on_click} className={classes.button}>+</Button>
-          <Input inputRef={this.textRef} type="text" />
+          <Input inputRef={this.textRef} type="text" fullWidth={true} onKeyDown={this.key_press} placeholder="Enter your todo" />
           </div>
         )
       }

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
+import Grid from '@material-ui/core/Grid';
 
 import AddTodoContainer from "../containers/AddTodoContainer";
 import VisibleTodoList from "../containers/VisibleTodoList";
@@ -19,12 +20,14 @@ const App = withStyles(styles)(
       const { classes, dispatch } = this.props
       const bridge = new DatabaseBridge(dispatch)
       return (
-        <div className={classes.root}>
-          <LogoutContainer action={bridge} />
-          <LoginContainer action={bridge} />
-          <AddTodoContainer action={bridge} />
-          <VisibleTodoList action={bridge} />
-        </div>
+        <Grid container justify="center" className={classes.root}>
+          <Grid className={classes.container}>
+            <LogoutContainer action={bridge} />
+            <LoginContainer action={bridge} />
+            <AddTodoContainer action={bridge} />
+            <VisibleTodoList action={bridge} />
+          </Grid>
+        </Grid>
       )
     }
   }
