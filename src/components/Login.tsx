@@ -53,7 +53,6 @@ class Login extends React.Component<PropsWithDispatch, {}> {
   componentWillMount() {
     firebase.auth().onAuthStateChanged((user:any) => {
       if(user !== null) {
-        alert(user.uid)
         this.props.action.initdb({
           uid: user.uid,
           username: user.displayName
