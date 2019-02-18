@@ -58,7 +58,6 @@ class Login extends React.Component<PropsWithDispatch, {}> {
           username: user.displayName
         })
       } else {
-        alert(user)
         this.props.action.initdb({
           uid: "",
           username: ""
