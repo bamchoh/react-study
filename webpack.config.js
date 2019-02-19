@@ -1,4 +1,6 @@
 const HtmlWebPackPlugin = require("html-webpack-plugin");
+const FaviconsWebpackPlugin = require("favicons-webpack-plugin")
+const path = require('path');
 
 module.exports = {
   devServer: {
@@ -7,6 +9,7 @@ module.exports = {
         target: "http://localhost:3000"
       }
     },
+    contentBase: [path.resolve(__dirname, "public/")],
     historyApiFallback: {
       index: 'index.html'
     }
@@ -16,7 +19,7 @@ module.exports = {
 
   output: {
     filename: "[name].[contenthash].js",
-    path: __dirname + "/public"
+    path: path.resolve(__dirname, "public/")
   },
 
   devtool: "source-map",
@@ -38,7 +41,6 @@ module.exports = {
         test: /\.js$/,
         loader: "source-map-loader"
       },
-
       {
         test: /\.html$/,
         use: [
@@ -54,6 +56,7 @@ module.exports = {
     new HtmlWebPackPlugin({
       template: "./src/index.html",
       filename: "./index.html"
-    })
+    }),
+    new FaviconsWebpackPlugin('./src/favicon.png'),
   ]
 };
