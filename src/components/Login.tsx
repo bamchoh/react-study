@@ -39,7 +39,7 @@ const uiConfig = {
       return true;
     },
   },
-  signInFlow: 'popup',
+  signInFlow: 'redirect',
   signInSuccessUrl: '/',
   signInOptions: [
     firebase.auth.GoogleAuthProvider.PROVIDER_ID,
