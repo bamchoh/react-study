@@ -2,6 +2,7 @@ import { Dispatch} from "redux";
 import * as firebase from "firebase/app";
 import 'firebase/database';
 import 'firebase/auth';
+import { TodoState } from '../reducers/todos'
 
 export class DatabaseBridge {
   uid:string;
@@ -155,6 +156,42 @@ export class DatabaseBridge {
   signOut() {
     const action = { type: 'user/signout' }
     this.dispatch(action)
+  }
+
+  onDragEnd(payload:any) {
+    const { dst, src, todos } = payload
+    const database:any = this.getDatabase();
+    const startAt = dst.index
+    const endAt = src.index+1
+    var todoAry:any = []
+
+    if(dst.index < src.index) {
+      for(var i = src.index;i >= dst.index;i--) {
+        todoAry.push({...todos[i]})
+      }
+    } else {
+      for(var i = src.index;i <= dst.index;i++) {
+        todoAry.push({...todos[i]})
+      }
+    }
+
+    var tmp = {...todoAry[0]}
+    for(var i:any = 1;i < todoAry.length; i++) {
+      todoAry[i-1] = {...todoAry[i], id: todoAry[i-1].id}
+    }
+    todoAry[todoAry.length-1] = {
+      ...tmp,
+      id: todoAry[todoAry.length-1].id,
+    }
+
+    const todoRef = database.ref(`todos/${this.uid}`)
+
+    var updates:any = {}
+    todoAry.forEach((val:any) => {
+      updates[`/${val.id}`] = val
+    })
+
+    todoRef.update(updates)
   }
 }
 

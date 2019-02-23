@@ -34,29 +34,11 @@ const TodoList = withStyles(styles)(
         return;
       }
 
-      console.log(draggableId)
-      console.log(destination.index)
-      console.log(source.index)
-
-      // const column = this.state.columns[source.droppableId];
-      // const newTaskIds = Array.from(column.taskIds);
-      // newTaskIds.splice(source.index, 1);
-      // newTaskIds.splice(destination.index, 0, draggableId);
-
-      // const newColumn = {
-      //   ...column,
-      //   taskIds: newTaskIds,
-      // };
-
-      // const newState = {
-      //   ...this.state,
-      //   columns: {
-      //     ...this.state.columns,
-      //     [newColumn.id]: newColumn,
-      //   },
-      // };
-
-      // this.setState(newState);
+      this.props.action.onDragEnd({
+        dst: destination,
+        src: source,
+        todos: this.props.todos
+      });
     }
 
     on_click_li = (e: React.MouseEvent<HTMLDivElement>) => {
