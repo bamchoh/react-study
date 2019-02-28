@@ -2,11 +2,14 @@ import * as React from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
 import { Droppable } from 'react-beautiful-dnd';
 import { Draggable } from 'react-beautiful-dnd';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import IconButton from '@material-ui/core/IconButton';
+import Icon from '@material-ui/core/Icon';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
 import styles from '../css/style';
@@ -34,29 +37,11 @@ const TodoList = withStyles(styles)(
         return;
       }
 
-      console.log(draggableId)
-      console.log(destination.index)
-      console.log(source.index)
-
-      // const column = this.state.columns[source.droppableId];
-      // const newTaskIds = Array.from(column.taskIds);
-      // newTaskIds.splice(source.index, 1);
-      // newTaskIds.splice(destination.index, 0, draggableId);
-
-      // const newColumn = {
-      //   ...column,
-      //   taskIds: newTaskIds,
-      // };
-
-      // const newState = {
-      //   ...this.state,
-      //   columns: {
-      //     ...this.state.columns,
-      //     [newColumn.id]: newColumn,
-      //   },
-      // };
-
-      // this.setState(newState);
+      this.props.action.onDragEnd({
+        dst: destination,
+        src: source,
+        todos: this.props.todos
+      });
     }
 
     on_click_li = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -77,21 +62,25 @@ const TodoList = withStyles(styles)(
     }
 
     listItems = () => {
+      const { classes } = this.props
       return this.props.todos.map((item:TodoState, index:number) => (
         <div key={item.id}>
         <Draggable draggableId={item.id} index={index}>
         {(provided:any) => (
           <div {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef} >
-            <ListItem key={item.id} button id={String(item.id)} onClick={this.on_click_li}>
-              <ListItemText>
-                {this.drawItems(item)}
-              </ListItemText>
-              <ListItemSecondaryAction>
+            <Paper id={String(item.id)} onClick={this.on_click_li} className={classes.paper}>
+              <div style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
+                <Typography component="p">
+                  {this.drawItems(item)}
+                </Typography>
+                <IconButton aria-label="Edit" onClick={this.on_click_for_del} id={String(item.id)}>
+                  <Icon id={String(item.id)}>edit_icon</Icon>
+                </IconButton>
                 <IconButton aria-label="Delete" onClick={this.on_click_for_del} id={String(item.id)}>
                   <DeleteIcon />
                 </IconButton>
-              </ListItemSecondaryAction>
-            </ListItem>
+              </div>
+            </Paper>
           </div>
         )}
         </Draggable>
@@ -104,16 +93,14 @@ const TodoList = withStyles(styles)(
       if(user.init && user.uid !== "") {
         return (
           <DragDropContext onDragEnd={this.onDragEnd}>
-            <List>
-              <Droppable droppableId="columns-1">
-                {(provided:any) => (
-                  <div ref={provided.innerRef} {...provided.droppableProps} >
-                    {this.listItems()}
-                    {provided.placeholder}
-                  </div>
-                )}
-              </Droppable>
-            </List>
+            <Droppable droppableId="columns-1">
+              {(provided:any) => (
+                <div ref={provided.innerRef} {...provided.droppableProps} >
+                  {this.listItems()}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
           </DragDropContext>
         )
       }

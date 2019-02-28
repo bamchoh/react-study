@@ -57,6 +57,10 @@ module.exports = {
       template: "./src/index.html",
       filename: "./index.html"
     }),
-    new FaviconsWebpackPlugin('./src/favicon.png'),
+    new FaviconsWebpackPlugin({
+      logo: './src/favicon.png',
+      title: 'TODO Apps',
+      background: '#ff0000',
+    }),
   ]
 };

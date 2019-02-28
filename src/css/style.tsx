@@ -5,8 +5,14 @@ import { Theme } from '@material-ui/core/styles/createMuiTheme';
 const styles = (theme: Theme) => createStyles({
 	root: {
     margin: '70px 0px 0px 0px',
-		backgroundColor: theme.palette.background.paper,
 	},
+  paper: {
+    ...theme.mixins.gutters(),
+    paddingTop: theme.spacing.unit,
+    paddingBottom: theme.spacing.unit,
+    margin: '5px 0px 0px 0px',
+		backgroundColor: theme.palette.background.paper,
+  },
   container: {
     padding: theme.spacing.unit,
     width: '100%',
