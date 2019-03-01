@@ -15,6 +15,8 @@ import { withStyles, WithStyles } from '@material-ui/core/styles';
 import styles from '../css/style';
 import { TodoState } from '../reducers/todos'
 
+import * as cssStyle from '../css/button.css'
+
 interface PropsWithDispatch {
   action: any
   todos: TodoState[]
@@ -69,7 +71,7 @@ const TodoList = withStyles(styles)(
         {(provided:any) => (
           <div {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef} >
             <Paper id={String(item.id)} onClick={this.on_click_li} className={classes.paper}>
-              <div style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
+              <div className={cssStyle.div}>
                 <Typography component="p">
                   {this.drawItems(item)}
                 </Typography>

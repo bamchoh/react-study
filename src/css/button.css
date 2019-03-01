@@ -1,0 +1,7 @@
+.div {
+	display: flex;
+}
+
+.div >:first-child {
+  margin-right: auto;
+}
