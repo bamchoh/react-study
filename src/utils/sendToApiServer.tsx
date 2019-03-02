@@ -133,7 +133,9 @@ export class DatabaseBridge {
 
     const ref = database.ref(`todos/${this.uid}/${id}/completed`)
     ref.once('value').then((snapshot:any) => {
-      ref.set(!snapshot.val())
+      if(snapshot.val() !== null) {
+        ref.set(!snapshot.val())
+      }
     })
   }
 
@@ -158,6 +160,23 @@ export class DatabaseBridge {
     this.dispatch(action)
   }
 
+  editTodo(payload:any) {
+    const id:string = payload.id
+    const text:string = payload.text
+    const database:any = this.getDatabase();
+
+    if(this.uid == "") {
+      return
+    }
+
+    const ref = database.ref(`todos/${this.uid}/${id}/text`)
+    ref.once('value').then((snapshot:any) => {
+      if(snapshot.val() !== null) {
+        ref.set(text)
+      }
+    })
+  }
+  
   onDragEnd(payload:any) {
     const { dst, src, todos } = payload
     const database:any = this.getDatabase();
