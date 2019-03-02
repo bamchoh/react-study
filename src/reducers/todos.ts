@@ -9,7 +9,6 @@ export interface TodoState {
 const todos = (state:TodoState[] = [], action:any) => {
   switch (action.type) {
     case 'todos/on_drag_end':
-      console.log(action)
       return state
     case 'todos/child_added':
       if(action.payload === undefined || action.payload === null) {
