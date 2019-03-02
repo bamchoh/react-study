@@ -176,7 +176,7 @@ export class DatabaseBridge {
       }
     })
   }
-
+  
   onDragEnd(payload:any) {
     const { dst, src, todos } = payload
     const database:any = this.getDatabase();
